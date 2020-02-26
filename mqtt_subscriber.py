@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import rospy
-from geometry_msgs.msg import Pose
+from geometry_msgs.msg import Pose2D
 import paho.mqtt.client as mqtt
 
 #MQTT info
@@ -8,7 +8,7 @@ hostname = "mqtt.eclipse.org" #Sandbox broker
 port = 1883 #Default port for unencrypted MQTT
 topic = "HeraKules_robot001/#"
 
-pub = rospy.Publisher('comm_message', Pose, queue_size = 1000)
+pub = rospy.Publisher('comm_message', Pose2D, queue_size = 1000)
 
 def on_connect(client, userdata, flags, rc):
     #Successfully connection is '0'
@@ -19,15 +19,10 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, message):
     rospy.loginfo("Received message on " + message.topic +
             ":\n" + str(message.payload))
-    comm_msg = Pose()
-    raw_msg = str(message.payload).split('\n')
-    comm_msg.position.x = float(raw_msg[1][5:])
-    comm_msg.position.y = float(raw_msg[2][5:])
-    comm_msg.position.z = float(raw_msg[3][5:])
-    comm_msg.orientation.x = float(raw_msg[5][5:])
-    comm_msg.orientation.y = float(raw_msg[6][5:])
-    comm_msg.orientation.z = float(raw_msg[7][5:])
-    comm_msg.orientation.w = float(raw_msg[8][5:])
+    comm_msg = Pose2D()
+    comm_msg.x, comm_msg.y = tuple([float(i)
+        for i in str(message.payload).split(' ')])
+    comm_msg.theta = 0.0
     pub.publish(comm_msg)
 
 def on_subscribe(client, userdata, mid):
