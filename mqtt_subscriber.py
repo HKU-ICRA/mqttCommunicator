@@ -8,7 +8,7 @@ hostname = "mqtt.eclipse.org" #Sandbox broker
 port = 1883 #Default port for unencrypted MQTT
 topic = "HeraKules_robot001/#"
 
-pub = rospy.Publisher('comm_message', Pose2D, queue_size = 1000)
+pub = rospy.Publisher('robot_pose', Pose2D, queue_size = 1000)
 
 def on_connect(client, userdata, flags, rc):
     #Successfully connection is '0'
