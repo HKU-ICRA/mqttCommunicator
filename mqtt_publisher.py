@@ -36,11 +36,11 @@ mqttc.connect(hostname, port = port, keepalive = 60, bind_address = "")
 
 def mqttPublisher():
 
-    rospy.init_node('mqtt_publisher', anonymous=True)
+    rospy.init_node('mqtt_publisher', anonymous = True)
 
     #First create a subscriber to acquire Pose info from
     #certain ROS topic.
-    rospy.Subscriber('robot_pose', Pose2D, callback)
+    rospy.Subscriber('ball_pose', Pose2D, callback)
 
     rospy.spin()
 
