@@ -243,7 +243,7 @@ if __name__ == '__main__':
             kalman = _KalmanFilter_(location[0], location[1])
             filterValid = True
         else:
-            location = kalman._filterUpdate(location[0], location[1])
+            location = kalman._filterUpdate_(location[0], location[1])
             
         # ROS node send pose out
         ball_pose.x, ball_pose.y, ball_pose.theta = location[0], location[1], 0.0
