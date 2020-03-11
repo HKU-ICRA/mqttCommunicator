@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import Pose2D
+from KalmanFilters import _KalmanFilter_
 
 import cv2
 import numpy as np
@@ -193,6 +194,8 @@ if __name__ == '__main__':
     dist1 = []
     mtx2 = []
     dist2 = []
+    
+    filterValid = False
 
     try:
         npzfile1 = np.load('calibration1.npz')
@@ -229,8 +232,20 @@ if __name__ == '__main__':
 
         location = getLocation(cor1, distance1/1000, cor2, distance2/1000, height)
         
-        """Send pose out"""
         ball_pose = Pose2D()
+        
+        # Stop filtering with invalid measure
+        if location[0] == -1 or location[1] == -1:
+            filterValid = False
+        
+        # Start filtering
+        if filterValid == False:
+            kalman = _KalmanFilter_(location[0], location[1])
+            filterValid = True
+        else:
+            location = kalman._filterUpdate(location[0], location[1])
+            
+        # ROS node send pose out
         ball_pose.x, ball_pose.y, ball_pose.theta = location[0], location[1], 0.0
         pub.publish(ball_pose)
         
